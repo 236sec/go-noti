@@ -1,0 +1,23 @@
+openapi: 3.0.4
+info:
+  title: Swagger Application - OpenAPI 3.0
+  description: |-
+    This is the OpenAPI 3.0 specification.
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.12
+tags:
+  - name: pet
+    description: Everything about your Pets
+  - name: store
+    description: Access to Petstore orders
+  - name: user
+    description: Operations about user
+  - name: health
+    description: API for check Server Status 2
+paths:
+  /v1/health/check:
+    $ref: "./health.yaml"

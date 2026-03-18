@@ -1,0 +1,17 @@
+# .golangci.yml
+version: "2"
+run:
+  timeout: 5m
+
+linters:
+  default: none # Replaces disable-all: true
+  enable:
+    - errcheck # Checks for unchecked errors
+    - govet # Reports suspicious constructs (standard Go vet)
+    - ineffassign # Detects when assignments to existing variables are not used
+    - staticcheck # Drop-in replacement for go vet
+    - unused # Checks for unused constants, variables, functions and types
+    - errname # Checks that error return values are named error
+    - whitespace # Checks for whitespace issues (e.g. trailing spaces, tabs)
+    - tagalign # Checks that struct field tags are aligned
+

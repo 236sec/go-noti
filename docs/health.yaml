@@ -1,0 +1,32 @@
+get:
+  tags:
+    - health
+  summary: Check API server status
+  description: Returns status of the API server
+  responses:
+    "200":
+      description: API Server Status OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 200
+              status:
+                type: string
+                example: OK
+    "500":
+      description: API Server Status Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 500
+              status:
+                type: string
+                example: INTERNAL_ERROR

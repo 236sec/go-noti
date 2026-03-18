@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+
+echo "Tidy Go modules..."
+go mod tidy
+
+# Get unique directories of staged .go files
+STAGED_GO_DIRS=$(git diff --cached --name-only --diff-filter=ACM | grep '\.go$' | xargs -I{} dirname {} | sort -u || true)
+
+if [ -n "$STAGED_GO_DIRS" ]; then
+  echo "Linting staged directories with golangci-lint..."
+  for dir in $STAGED_GO_DIRS; do
+    echo "  -> linting ./$dir"
+    golangci-lint run --config .golangci.yml --fix "./$dir"
+  done
+
+  # Re-stage the originally staged .go files after lint auto-fixes
+  git diff --cached --name-only --diff-filter=ACM | grep '\.go$' | xargs git add
+else
+  echo "No staged .go files to lint."
+fi
+
+# Re-stage go.mod / go.sum if tidy changed them
+git add go.mod go.sum 2>/dev/null || true
+
+echo "Running tests..."
+make gen-mock
+make test
+echo "All tests passed!"

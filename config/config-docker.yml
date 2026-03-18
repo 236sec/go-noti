@@ -1,0 +1,10 @@
+server:
+  AppVersion: 1.0.0
+  Port: :3000
+  Mode: Development
+  JwtSecretKey: secretkey
+swagger:
+  Title: Swagger API Docs
+  BasePath: /
+  FilePath: ./docs/compile/swagger.yaml
+  Path: swagger

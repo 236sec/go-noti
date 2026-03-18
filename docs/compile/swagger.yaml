@@ -1,0 +1,53 @@
+openapi: 3.0.4
+info:
+  title: Swagger Application - OpenAPI 3.0
+  description: This is the OpenAPI 3.0 specification.
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.12
+tags:
+  - name: pet
+    description: Everything about your Pets
+  - name: store
+    description: Access to Petstore orders
+  - name: user
+    description: Operations about user
+  - name: health
+    description: API for check Server Status 2
+paths:
+  /v1/health/check:
+    get:
+      tags:
+        - health
+      summary: Check API server status
+      description: Returns status of the API server
+      responses:
+        '200':
+          description: API Server Status OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: OK
+        '500':
+          description: API Server Status Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  status:
+                    type: string
+                    example: INTERNAL_ERROR
