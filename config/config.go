@@ -20,14 +20,20 @@ type Config struct {
 }
 
 type YMLConfig struct {
-	Server  ServerConfig
-	Swagger SwaggerConfig
+	Server   ServerConfig
+	Swagger  SwaggerConfig
+	Database DatabaseConfig
 }
 
 type EnvConfig struct {
 	Redis    RedisConfig
 	Postgres PostgresConfig
 	Email    EmailConfig
+	MongoDB  MongoDBConfig
+}
+
+type DatabaseConfig struct {
+	Driver string
 }
 
 // Server config struct
@@ -63,13 +69,22 @@ type PostgresConfig struct {
 	PostgresqlDbname   string `env:"POSTGRES_DB,default=postgres"`
 }
 
+// MongoDB config
+type MongoDBConfig struct {
+	MongodbHost     string `env:"MONGO_HOST,default=localhost"`
+	MongodbPort     string `env:"MONGO_PORT,default=27017"`
+	MongodbUser     string `env:"MONGO_USER,default=root"`
+	MongodbPassword string `env:"MONGO_PASSWORD,default=password"`
+	MongodbDbname   string `env:"MONGO_DB,default=local"`
+}
+
 // Redis config
 type RedisConfig struct {
 	RedisAddr      string `env:"REDIS_ADDR,default=localhost:6379"`
 	RedisPassword  string `env:"REDIS_PASSWORD,default=password"`
 	RedisDB        int    `env:"REDIS_DB,default=0"`
 	RedisDefaultdb int    `env:"REDIS_DEFAULTDB,default=0"`
-	MinIdleConns   int    `env:"REDIS_MIN_IDLE_CONNS,default=0"`
+	MinIdleConns   int    `env:"MIN_IDLE_CONNS,default=0"`
 	PoolSize       int    `env:"REDIS_POOL_SIZE,default=10"`
 	PoolTimeout    int    `env:"REDIS_POOL_TIMEOUT,default=0"`
 	Protocol       int    `env:"REDIS_PROTOCOL,default=2"`

@@ -8,3 +8,5 @@ swagger:
   BasePath: /
   FilePath: ./docs/compile/swagger.yaml
   Path: swagger
+database:
+  driver: postgres

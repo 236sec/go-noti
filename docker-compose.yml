@@ -20,7 +20,19 @@ services:
     command: redis-server --requirepass "password"
     volumes:
       - redis-data:/data
+  mongo:
+    image: mongo
+    container_name: my-mongo-db
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
 
 volumes:
   db_data:
   redis-data:
+  mongo-data:

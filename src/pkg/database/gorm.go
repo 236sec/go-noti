@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -16,32 +17,28 @@ type Database struct {
 	DB *gorm.DB
 }
 
-// Create implements the Database interface
-func (db *Database) Create(value interface{}) error {
-	return db.DB.Create(value).Error
+func (db *Database) Create(ctx context.Context, collectionName string, doc interface{}) error {
+	return db.DB.WithContext(ctx).Table(collectionName).Create(doc).Error
 }
 
-// Find implements the Database interface
-func (db *Database) Find(dest any, conds ...any) error {
-	return db.DB.Find(dest, conds...).Error
+func (db *Database) Find(ctx context.Context, collectionName string, filter Filter, dest interface{}) error {
+	err := db.DB.WithContext(ctx).Table(collectionName).Where(filter).Find(dest).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return ErrRecordNotFound
+	}
+	return err
 }
 
-// First implements the Database interface
-func (db *Database) First(dest any, conds ...any) error {
-	return db.DB.First(dest, conds...).Error
+func (db *Database) First(ctx context.Context, collectionName string, filter Filter, dest interface{}) error {
+	err := db.DB.WithContext(ctx).Table(collectionName).Where(filter).First(dest).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return ErrRecordNotFound
+	}
+	return err
 }
 
-// Where implements the Database interface
-func (db *Database) Where(query any, args ...any) IDatabase {
-	return &Database{DB: db.DB.Where(query, args...)}
-}
-
-func (db *Database) WithContext(ctx context.Context) IDatabase {
-	return &Database{DB: db.DB.WithContext(ctx)}
-}
-
-// initDatabase initializes the database connection
-func initDatabase() *Database {
+// initPostgres initializes the database connection
+func initPostgres() IDatabase {
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
 		log.Printf("Warning: Error loading .env file: %v", err)

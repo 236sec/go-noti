@@ -8,19 +8,19 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"goboilerplate.com/src/models"
+	"goboilerplate.com/src/pkg/database"
 	"goboilerplate.com/src/repo/mocks"
 	"goboilerplate.com/src/usecases"
-	"gorm.io/gorm"
 )
 
 type assertions struct {
-	name          string
-	request       CreateUserRequest
-	mockSetup     func(mockRepo *mocks.MockIUserRepo)
-	expectedError error
+	name           string
+	request        CreateUserRequest
+	mockSetup      func(mockRepo *mocks.MockIUserRepo)
+	expectedError  error
 	expectedResult CreateUserResponse
 }
-	
+
 func TestCreateUserUseCase_Apply(t *testing.T) {
 	// Define test cases
 	testCases := []assertions{
@@ -51,7 +51,7 @@ func TestCreateUserUseCase_Apply(t *testing.T) {
 			},
 			mockSetup: func(mockRepo *mocks.MockIUserRepo) {
 				// User not found → CreateUser should be called exactly once
-				mockRepo.EXPECT().GetUserByUsername(gomock.Any(), "newuser").Return(models.User{}, gorm.ErrRecordNotFound).Times(1)
+				mockRepo.EXPECT().GetUserByUsername(gomock.Any(), "newuser").Return(models.User{}, database.ErrRecordNotFound).Times(1)
 				mockRepo.EXPECT().CreateUser(gomock.Any(), gomock.Any()).Return(models.User{
 					ID:          1,
 					FirstName:   "New",
@@ -64,7 +64,7 @@ func TestCreateUserUseCase_Apply(t *testing.T) {
 			},
 			expectedError: nil,
 			expectedResult: CreateUserResponse{
-				ID:          1,
+				ID: 1,
 			},
 		},
 	}
@@ -80,7 +80,7 @@ func TestCreateUserUseCase_Apply(t *testing.T) {
 			useCase := NewCreateUserUseCase(mockRepo)
 			result, err := useCase.Apply(context.Background(), tt.request)
 
-			assert.ErrorIs(t,tt.expectedError,err)
+			assert.ErrorIs(t, tt.expectedError, err)
 			assert.Equal(t, tt.expectedResult, result)
 		})
 	}

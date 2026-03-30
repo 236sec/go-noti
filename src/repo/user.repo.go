@@ -28,7 +28,7 @@ func NewUserRepo(db database.IDatabase, redis redis.IRedis) *UserRepo {
 }
 
 func (r *UserRepo) CreateUser(ctx context.Context, opt models.User) (models.User, error) {
-	if err := r.db.WithContext(ctx).Create(&opt); err != nil {
+	if err := r.db.Create(ctx, "users", &opt); err != nil {
 		return models.User{}, err
 	}
 	// Invalidate cache after create
@@ -48,7 +48,7 @@ func (r *UserRepo) GetUserByUsername(ctx context.Context, username string) (mode
 		}
 	}
 
-	if err := r.db.WithContext(ctx).Where("username = ?", username).First(&user); err != nil {
+	if err := r.db.First(ctx, "users", database.Filter{"username": username}, &user); err != nil {
 		return models.User{}, err
 	}
 

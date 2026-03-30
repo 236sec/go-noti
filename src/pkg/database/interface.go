@@ -2,21 +2,31 @@ package database
 
 import (
 	"context"
+	"errors"
 
-	"gorm.io/gorm"
+	"goboilerplate.com/config"
 )
 
-var ErrRecordNotFound = gorm.ErrRecordNotFound
+var ErrRecordNotFound = errors.New("record not found")
+
+type Filter map[string]interface{}
 
 type IDatabase interface {
-	WithContext(ctx context.Context) IDatabase
-	Create(value interface{}) error
-	Find(dest any, conds ...any) error
-	First(dest any, conds ...any) error
-	Where(query any, args ...any) IDatabase
+	Create(ctx context.Context, collectionName string, doc interface{}) error
+	Find(ctx context.Context, collectionName string, filter Filter, dest interface{}) error
+	First(ctx context.Context, collectionName string, filter Filter, dest interface{}) error
 }
 
 func GetDatabase() IDatabase {
-	dbInstance := initDatabase()
-	return dbInstance
+	cfg := config.GetConfig()
+	driver := cfg.YMLConfig.Database.Driver
+
+	switch driver {
+	case "postgres":
+		return initPostgres()
+	case "mongodb":
+		return initMongoDB()
+	default:
+		panic("Unsupported database driver")
+	}
 }
