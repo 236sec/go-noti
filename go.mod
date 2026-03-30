@@ -14,6 +14,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
+	github.com/wneessen/go-mail v0.7.2
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
 )
