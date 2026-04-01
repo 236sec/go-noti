@@ -22,7 +22,7 @@ func (db *Database) Create(ctx context.Context, collectionName string, doc inter
 }
 
 func (db *Database) Find(ctx context.Context, collectionName string, filter Filter, dest interface{}) error {
-	err := db.DB.WithContext(ctx).Table(collectionName).Where(filter).Find(dest).Error
+	err := db.DB.WithContext(ctx).Table(collectionName).Where(map[string]interface{}(filter)).Find(dest).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return ErrRecordNotFound
 	}
@@ -30,7 +30,7 @@ func (db *Database) Find(ctx context.Context, collectionName string, filter Filt
 }
 
 func (db *Database) First(ctx context.Context, collectionName string, filter Filter, dest interface{}) error {
-	err := db.DB.WithContext(ctx).Table(collectionName).Where(filter).First(dest).Error
+	err := db.DB.WithContext(ctx).Table(collectionName).Where(map[string]interface{}(filter)).First(dest).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return ErrRecordNotFound
 	}
