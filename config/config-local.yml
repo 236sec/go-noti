@@ -10,3 +10,6 @@ swagger:
   Path: swagger
 database:
   driver: postgres
+telemetry:
+  enabled: false
+  serviceName: boilerplate-service

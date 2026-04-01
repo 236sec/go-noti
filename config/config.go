@@ -20,9 +20,10 @@ type Config struct {
 }
 
 type YMLConfig struct {
-	Server   ServerConfig
-	Swagger  SwaggerConfig
-	Database DatabaseConfig
+	Server    ServerConfig
+	Swagger   SwaggerConfig
+	Database  DatabaseConfig
+	Telemetry TelemetryConfig
 }
 
 type EnvConfig struct {
@@ -90,11 +91,18 @@ type RedisConfig struct {
 	Protocol       int    `env:"REDIS_PROTOCOL,default=2"`
 }
 
+// Swagger config
 type SwaggerConfig struct {
 	BasePath string
 	FilePath string
 	Path     string
 	Title    string
+}
+
+// Telemetry config
+type TelemetryConfig struct {
+	Enabled     bool   `env:"TELEMETRY_ENABLED,default=false"`
+	ServiceName string `env:"TELEMETRY_SERVICE_NAME,default=boilerplate-service"`
 }
 
 var GetConfig = sync.OnceValue(func() *Config {

@@ -16,7 +16,8 @@ func NewHealthHandler(healthUseCase usecases.IHealthUseCase) *HealthHandler {
 }
 
 func (h *HealthHandler) CheckHealth(c fiber.Ctx) error {
-	if err := h.healthUseCase.Apply(); err != nil {
+	ctx := c.Context()
+	if err := h.healthUseCase.Apply(ctx); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Service Unhealthy",

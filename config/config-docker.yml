@@ -8,3 +8,8 @@ swagger:
   BasePath: /
   FilePath: ./docs/compile/swagger.yaml
   Path: swagger
+database:
+  driver: postgres
+telemetry:
+  enabled: true
+  serviceName: boilerplate-service

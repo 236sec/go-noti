@@ -3,10 +3,13 @@ package user
 import (
 	"context"
 
+	"go.opentelemetry.io/otel"
 	"goboilerplate.com/src/domain"
 	"goboilerplate.com/src/repo"
 	"goboilerplate.com/src/usecases"
 )
+
+var loginUserTracer = otel.Tracer("usecase.loginuser")
 
 type ILoginUserUseCase interface {
 	Apply(ctx context.Context, req LoginUserRequest) (LoginUserResponse, error)
@@ -21,13 +24,16 @@ func NewLoginUserUseCase(userRepo repo.IUserRepo) *LoginUserUseCase {
 }
 
 func (u *LoginUserUseCase) Apply(ctx context.Context, req LoginUserRequest) (LoginUserResponse, error) {
+	ctx, span := loginUserTracer.Start(ctx, "LoginUserUseCase.Apply")
+	defer span.End()
+
 	modelUser, err := u.userRepo.GetUserByUsername(ctx, req.Username)
 	if err != nil {
 		return LoginUserResponse{}, usecases.ErrUserNotFound
 	}
-	
+
 	domainUser := domain.FromModel(modelUser)
-	
+
 	if !domainUser.IsAbleToLogin() {
 		return LoginUserResponse{}, usecases.ErrUserNotAbleToLogin
 	}
@@ -37,11 +43,11 @@ func (u *LoginUserUseCase) Apply(ctx context.Context, req LoginUserRequest) (Log
 	// if domainUser.Password != req.Password {
 	// 	return LoginUserResponse{}, usecases.ErrorInvalidCredentials
 	// }
-	
+
 	// TODO: Generate proper JWT token here
 	// For now, returning a placeholder token
 	token := generateToken(domainUser)
-	
+
 	return LoginUserResponse{
 		Token: token,
 	}, nil

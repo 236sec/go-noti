@@ -4,18 +4,22 @@ import (
 	"context"
 	"log"
 
+	fiberotel "github.com/gofiber/contrib/v3/otel"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/logger"
+	"github.com/google/uuid"
+	"goboilerplate.com/config"
+	ctxkey "goboilerplate.com/src/pkg/ctx"
 	"goboilerplate.com/src/pkg/swagger"
 	"goboilerplate.com/src/rest/response"
 )
 
-type contextKey string
-
-const requestIDKey contextKey = "requestId"
-
 func RegisterMiddleware(app *fiber.App) {
+	cfg := config.GetConfig()
+	if cfg.YMLConfig.Telemetry.Enabled {
+		app.Use(fiberotel.Middleware())
+	}
 	app.Use(cors.New())
 
 	swagger := swagger.GetSwagger()
@@ -23,7 +27,7 @@ func RegisterMiddleware(app *fiber.App) {
 
 	app.Use(func(c fiber.Ctx) error {
 		ctx := c.Context()
-		ctx = context.WithValue(ctx, requestIDKey, c.Get("X-Request-ID"))
+		ctx = context.WithValue(ctx, ctxkey.RequestID{}, GetRequestID(c))
 		c.SetContext(ctx)
 		return c.Next()
 	})
@@ -57,4 +61,11 @@ func RecoveryMiddleware(c fiber.Ctx) error {
 	return c.Next()
 }
 
-// fiber:context-methods migrated
+func GetRequestID(c fiber.Ctx) string {
+	requestID := c.Get("X-Request-ID")
+	if requestID == "" {
+		requestID = uuid.New().String()
+		c.Set("X-Request-ID", requestID)
+	}
+	return requestID
+}

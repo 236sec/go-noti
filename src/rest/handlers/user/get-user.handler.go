@@ -19,7 +19,7 @@ func NewGetUserHandler(getUserUseCase user.IGetUserUseCase) *GetUserHandler {
 
 func (h *GetUserHandler) GetUser(c fiber.Ctx) error {
 	userID := c.Params("id")
-	resData, err := h.getUserUseCase.Apply(c.RequestCtx(), userID)
+	resData, err := h.getUserUseCase.Apply(c.Context(), userID)
 	var res response.BaseResponse[any]
 
 	if err != nil {

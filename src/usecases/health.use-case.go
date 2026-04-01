@@ -1,12 +1,22 @@
 package usecases
 
+import (
+	"context"
+
+	"go.opentelemetry.io/otel"
+)
+
+var healthTracer = otel.Tracer("usecase.health")
+
 type IHealthUseCase interface {
-	Apply() error
+	Apply(ctx context.Context) error
 }
 
 type HealthUseCase struct{}
 
-func (u *HealthUseCase) Apply() error {
+func (u *HealthUseCase) Apply(ctx context.Context) error {
+	_, span := healthTracer.Start(ctx, "HealthUseCase.CheckHealth")
+	defer span.End()
 	return nil
 }
 

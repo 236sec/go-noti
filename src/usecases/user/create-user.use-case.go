@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 
+	"go.opentelemetry.io/otel"
 	"goboilerplate.com/src/models"
 	"goboilerplate.com/src/pkg/database"
 	"goboilerplate.com/src/repo"
 	"goboilerplate.com/src/usecases"
 )
 
-
+var createUserTracer = otel.Tracer("usecase.createuser")
 
 type ICreateUserUseCase interface {
 	Apply(ctx context.Context, req CreateUserRequest) (CreateUserResponse, error)
@@ -25,6 +26,9 @@ func NewCreateUserUseCase(userRepo repo.IUserRepo) *CreateUserUseCase {
 }
 
 func (u *CreateUserUseCase) Apply(ctx context.Context, req CreateUserRequest) (CreateUserResponse, error) {
+	ctx, span := createUserTracer.Start(ctx, "CreateUserUseCase.Apply")
+	defer span.End()
+
 	existingUser, err := u.userRepo.GetUserByUsername(ctx, req.Username)
 	if err == nil && existingUser.ID != 0 {
 		return CreateUserResponse{}, usecases.ErrUserAlreadyExists
@@ -32,7 +36,7 @@ func (u *CreateUserUseCase) Apply(ctx context.Context, req CreateUserRequest) (C
 	if err != nil && !errors.Is(err, database.ErrRecordNotFound) {
 		return CreateUserResponse{}, usecases.ErrInternalServerError
 	}
-	
+
 	newUser, err := u.userRepo.CreateUser(ctx, models.User{
 		Username:    req.Username,
 		Password:    req.Password,
@@ -44,7 +48,7 @@ func (u *CreateUserUseCase) Apply(ctx context.Context, req CreateUserRequest) (C
 	if err != nil {
 		return CreateUserResponse{}, usecases.ErrCannotCreateUser
 	}
-	
+
 	return CreateUserResponse{
 		ID: newUser.ID,
 	}, nil
