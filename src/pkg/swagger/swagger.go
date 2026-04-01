@@ -1,8 +1,8 @@
 package swagger
 
 import (
-	"github.com/gofiber/contrib/swagger"
-	"github.com/gofiber/fiber/v2"
+	swagger "github.com/gofiber/contrib/v3/swaggerui"
+	"github.com/gofiber/fiber/v3"
 	"goboilerplate.com/config"
 )
 
@@ -14,6 +14,6 @@ func GetSwagger() fiber.Handler {
 		Path:     cfg.YMLConfig.Swagger.Path,
 		Title:    cfg.YMLConfig.Swagger.Title,
 	}
-	
+
 	return swagger.New(swaggerConfig)
 }

@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"goboilerplate.com/src/rest/response"
 	"goboilerplate.com/src/usecases"
 	"goboilerplate.com/src/usecases/user"
@@ -17,11 +17,11 @@ func NewGetUserHandler(getUserUseCase user.IGetUserUseCase) *GetUserHandler {
 	}
 }
 
-func (h *GetUserHandler) GetUser(c *fiber.Ctx) error {
+func (h *GetUserHandler) GetUser(c fiber.Ctx) error {
 	userID := c.Params("id")
-	resData, err := h.getUserUseCase.Apply(c.Context(), userID)
+	resData, err := h.getUserUseCase.Apply(c.RequestCtx(), userID)
 	var res response.BaseResponse[any]
-	
+
 	if err != nil {
 		switch err {
 		case usecases.ErrUserNotFound:
@@ -36,3 +36,5 @@ func (h *GetUserHandler) GetUser(c *fiber.Ctx) error {
 
 	return c.Status(res.HttpStatus).JSON(res)
 }
+
+// fiber:context-methods migrated

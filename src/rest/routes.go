@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"goboilerplate.com/src/di"
 	"goboilerplate.com/src/rest/handlers"
 	"goboilerplate.com/src/rest/handlers/user"

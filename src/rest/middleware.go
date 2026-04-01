@@ -3,12 +3,10 @@ package rest
 import (
 	"context"
 	"log"
-	"os"
 
-	"github.com/gofiber/contrib/fiberzerolog"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/rs/zerolog"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 	"goboilerplate.com/src/pkg/swagger"
 	"goboilerplate.com/src/rest/response"
 )
@@ -22,24 +20,30 @@ func RegisterMiddleware(app *fiber.App) {
 
 	swagger := swagger.GetSwagger()
 	app.Use(swagger)
-	
-	app.Use(func(c *fiber.Ctx) error {
-		ctx := c.UserContext()
+
+	app.Use(func(c fiber.Ctx) error {
+		ctx := c.Context()
 		ctx = context.WithValue(ctx, requestIDKey, c.Get("X-Request-ID"))
-		c.SetUserContext(ctx)
+		c.SetContext(ctx)
 		return c.Next()
 	})
 
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
-
-	app.Use(fiberzerolog.New(fiberzerolog.Config{
-		Logger: &logger,
+	app.Use(logger.New(logger.Config{
+		CustomTags: map[string]logger.LogFunc{
+			"requestid": func(output logger.Buffer, c fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
+				return output.WriteString(c.Get("X-Request-ID"))
+			},
+			"requestbody": func(output logger.Buffer, c fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
+				return output.Write(c.Body())
+			},
+		},
+		Format: "[${time}] ${status} - ${latency} ${method} ${path}\nRequestID: ${requestid}\nRequestBody: ${requestbody}\nResponse: ${resBody}\n",
 	}))
 
 	app.Use(RecoveryMiddleware)
 }
 
-func RecoveryMiddleware(c *fiber.Ctx) error {
+func RecoveryMiddleware(c fiber.Ctx) error {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Printf("Panic recovered: %v\n", r)
@@ -52,3 +56,5 @@ func RecoveryMiddleware(c *fiber.Ctx) error {
 	}()
 	return c.Next()
 }
+
+// fiber:context-methods migrated

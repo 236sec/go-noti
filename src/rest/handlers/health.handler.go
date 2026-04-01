@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"goboilerplate.com/src/usecases"
 )
 
@@ -15,7 +15,7 @@ func NewHealthHandler(healthUseCase usecases.IHealthUseCase) *HealthHandler {
 	}
 }
 
-func (h *HealthHandler) CheckHealth(c *fiber.Ctx) error {
+func (h *HealthHandler) CheckHealth(c fiber.Ctx) error {
 	if err := h.healthUseCase.Apply(); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",

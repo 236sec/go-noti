@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"goboilerplate.com/src/rest/response"
 	"goboilerplate.com/src/usecases"
 	"goboilerplate.com/src/usecases/user"
@@ -17,18 +17,18 @@ func NewCreateUserHandler(createUserUseCase user.ICreateUserUseCase) *CreateUser
 	}
 }
 
-func (h *CreateUserHandler) CreateUser(c *fiber.Ctx) error {
+func (h *CreateUserHandler) CreateUser(c fiber.Ctx) error {
 	var req user.CreateUserRequest
-	if err := c.BodyParser(&req); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Invalid request body",
 		})
 	}
 
-	resData, err := h.createUserUseCase.Apply(c.UserContext(), req)
+	resData, err := h.createUserUseCase.Apply(c.Context(), req)
 	var res response.BaseResponse[any]
-	
+
 	if err != nil {
 		switch err {
 		case usecases.ErrUserAlreadyExists:
@@ -45,3 +45,5 @@ func (h *CreateUserHandler) CreateUser(c *fiber.Ctx) error {
 
 	return c.Status(res.HttpStatus).JSON(res)
 }
+
+// fiber:context-methods migrated

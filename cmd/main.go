@@ -3,7 +3,7 @@ package main
 import (
 	"log/slog"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"goboilerplate.com/config"
 	"goboilerplate.com/src/rest"
 )
