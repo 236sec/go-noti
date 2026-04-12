@@ -60,4 +60,3 @@ func main() {
 		fmt.Println("Usage: go run ./cmd/migrate.go [up|down]")
 	}
 }
-

@@ -1,11 +1,11 @@
 package di
 
-
 import (
 	"sync"
 
 	"goboilerplate.com/src/usecases"
 	"goboilerplate.com/src/usecases/email"
+	"goboilerplate.com/src/usecases/otp"
 	"goboilerplate.com/src/usecases/user"
 )
 
@@ -27,4 +27,8 @@ var GetCreateUserUseCase = sync.OnceValue(func() *user.CreateUserUseCase {
 
 var GetSendEmailUseCase = sync.OnceValue(func() *email.SendEmailUseCase {
 	return email.NewSendEmailUseCase(getEmailService())
+})
+
+var GetSendOTPEmailUseCase = sync.OnceValue(func() *otp.SendOTPEmailUseCase {
+	return otp.NewSendOTPEmailUseCase(getEmailService())
 })

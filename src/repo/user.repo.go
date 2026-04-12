@@ -19,7 +19,7 @@ type IUserRepo interface {
 }
 
 type UserRepo struct {
-	db database.IDatabase
+	db    database.IDatabase
 	redis redis.IRedis
 }
 
@@ -32,7 +32,7 @@ func (r *UserRepo) CreateUser(ctx context.Context, opt models.User) (models.User
 		return models.User{}, err
 	}
 	// Invalidate cache after create
-	if err := r.redis.Del(ctx,userCachePrefix+opt.Username); err != nil {
+	if err := r.redis.Del(ctx, userCachePrefix+opt.Username); err != nil {
 		return models.User{}, err
 	}
 	return opt, nil

@@ -24,6 +24,7 @@ type YMLConfig struct {
 	Swagger   SwaggerConfig
 	Database  DatabaseConfig
 	Telemetry TelemetryConfig
+	Broker    BrokerConfig
 }
 
 type EnvConfig struct {
@@ -31,6 +32,7 @@ type EnvConfig struct {
 	Postgres PostgresConfig
 	Email    EmailConfig
 	MongoDB  MongoDBConfig
+	Kafka    KafkaConfig
 }
 
 type DatabaseConfig struct {
@@ -61,6 +63,11 @@ type EmailConfig struct {
 	EmailFrom     string `env:"EMAIL_FROM,default="`
 }
 
+// Kafka config
+type KafkaConfig struct {
+	URL string `env:"KAFKA_URL,default=localhost:9092"`
+}
+
 // Postgresql config
 type PostgresConfig struct {
 	PostgresqlHost     string `env:"POSTGRES_HOST,default=localhost"`
@@ -68,6 +75,13 @@ type PostgresConfig struct {
 	PostgresqlUser     string `env:"POSTGRES_USER,default=postgres"`
 	PostgresqlPassword string `env:"POSTGRES_PASSWORD,default=password"`
 	PostgresqlDbname   string `env:"POSTGRES_DB,default=postgres"`
+}
+
+// Broker config
+type BrokerConfig struct {
+	Enabled                bool
+	AllowAutoTopicCreation bool
+	MaxAttempts            int
 }
 
 // MongoDB config

@@ -9,7 +9,7 @@ import (
 
 func TestUser_GetFullName(t *testing.T) {
 	testCases := []struct {
-		name     string
+		name      string
 		firstName string
 		lastName  string
 		expected  string

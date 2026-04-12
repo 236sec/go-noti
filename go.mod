@@ -11,6 +11,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/redis/go-redis/v9 v9.18.0
+	github.com/segmentio/kafka-go v0.4.50
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	github.com/wneessen/go-mail v0.7.2
@@ -24,7 +25,10 @@ require (
 	gorm.io/gorm v1.31.1
 )
 
-require go.opentelemetry.io/contrib v1.40.0 // indirect
+require (
+	github.com/pierrec/lz4/v4 v4.1.16 // indirect
+	go.opentelemetry.io/contrib v1.40.0 // indirect
+)
 
 require (
 	github.com/andybalholm/brotli v1.2.1 // indirect

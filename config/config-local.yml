@@ -1,6 +1,6 @@
 server:
   AppVersion: 1.0.0
-  Port: :3000
+  Port: :3001
   Mode: Development
   JwtSecretKey: secretkey
 swagger:
@@ -13,3 +13,7 @@ database:
 telemetry:
   enabled: false
   serviceName: boilerplate-service
+broker:
+  enabled: true
+  allowAutoTopicCreation: true
+  maxAttempts: 3

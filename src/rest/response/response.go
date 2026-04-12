@@ -2,12 +2,11 @@ package response
 
 import "net/http"
 
-
 type BaseResponse[T any] struct {
-	Success bool        `json:"success"`
-	Data    T           `json:"data,omitempty"`
-	Message string      `json:"message,omitempty"`
-	HttpStatus int `json:"-"`
+	Success    bool   `json:"success"`
+	Data       T      `json:"data,omitempty"`
+	Message    string `json:"message,omitempty"`
+	HttpStatus int    `json:"-"`
 }
 
 type ResponseCode int
